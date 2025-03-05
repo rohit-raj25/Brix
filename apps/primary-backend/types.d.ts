@@ -1,3 +1,5 @@
-declare namespacce Express{
-    interface Request
+declare namespace Express{
+    interface Request{
+        userId?:string;
+    }
 }
