@@ -13,8 +13,9 @@ app.post("/project", authMiddleware, async (req, res) => {
   //add logic to gey the useful prompt from the user
   const description=prompt.split("\n")[0];
   const project = await prismaClient.project.create({
-    data: { description, userId },
+    data: { description, userId},
   });
+  console.log(project);
   res.json({projectId:project.id});
 });
 
@@ -31,7 +32,7 @@ app.get("/projects",authMiddleware ,async (req, res) => {
   res.json({project});
 }); 
 
-app.listen(8080, () => {
-  console.log("Server is running on port 8080");
+app.listen(9090, () => {
+  console.log("Server is running on port 9090");
 });
 

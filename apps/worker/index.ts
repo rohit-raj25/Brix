@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.post ("/prompt", async (req, res) => {
     const {prompt,projectId} = req.body;
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const apiKey =" process.env.GOOGLE_API_KEY";
 
     if (!apiKey) {
         res.status(500).json({error: "API key is missing"});
@@ -20,8 +20,8 @@ app.post ("/prompt", async (req, res) => {
     }
    //correct it
     const client = new GoogleGenerativeAI(apiKey);
-    const model = client.getGenerativeModel({ model: "gemini-1.5-pro-preview-0409" });
-    await prismaClient.prompt.create({
+    const model = client.getGenerativeModel({ model: "gemini-1.5-latest" });
+    const promptDb=await prismaClient.prompt.create({
         data: {     
             content:prompt,
             projectId,
@@ -49,7 +49,10 @@ app.post ("/prompt", async (req, res) => {
             role: p.type === "USER" ? "user" : "assistant",
             parts: [{ text: p.content }],
         })),
-        systemInstruction: { role: "system", parts: [{ text: systemPrompt }] },
+        systemInstruction: {
+             
+             parts: [{ text: "systemPrompt" }] 
+            },
         generationConfig: { maxOutputTokens: 8000 }
     });
 
@@ -62,15 +65,22 @@ app.post ("/prompt", async (req, res) => {
         }
     }
 
-    await prismaClient.prompt.create({
-        data: {
-            content: artifact,
-            projectId,
-            type: "SYSTEM"
-        },
-    });
+    console.log("Processing complete!");
+    console.log(promptDb);
 
-    res.json({ response: artifact });
+    await prismaClient.prompt.create({
+      data: {
+        content: artifact,
+        projectId,
+        type: "SYSTEM",
+      },
+    });
+  
+    
+  
+    
+    console.log({promptDb});
+    res.json({promptDb });
 });
 
 app.listen(9091, () => {

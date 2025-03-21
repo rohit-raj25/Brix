@@ -6,12 +6,16 @@ RUN apt-get update \
     && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*  
 
-# Revert the code server default user  
+# Ensure the directory exists and is accessible
+RUN mkdir -p /tmp/brix-worker \
+    && chown -R coder:coder /tmp/brix-worker \
+    && chmod -R 777 /tmp/brix-worker 
+
 USER coder
 
-#Expose code-server's default port
+# Expose code-server's default port
 EXPOSE 8080
 
 # Start code-server on container launch
